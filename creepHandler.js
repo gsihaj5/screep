@@ -1,36 +1,40 @@
 module.exports = {
-    isWorking: function (creep){
+    updateWorkingStatus: function (creep) {
         var creepStorage = creep.store;
         var memory = creep.memory;
-    
-        if(creepStorage.getUsedCapacity() == 0 && !memory.working)
+
+        if (creepStorage.getUsedCapacity() === 0 && !memory.working)
             memory.working = true
-    
-        else if(creepStorage.getFreeCapacity() == 0 && memory.working)
+
+        else if (creepStorage.getFreeCapacity() === 0 && memory.working)
             memory.working = false;
-    
-        return memory.working;
+
+        creep.memory.working = memory.working;
     },
-    cleanCreepMemory(){
+    cleanCreepMemory() {
         for (let name in Memory.creeps) {
-            if (Game.creeps[name] == undefined) {
+            if (Game.creeps[name] === undefined) {
                 delete Memory.creeps[name];
             }
         }
     },
 
-    handle: function(){
+    handle: function () {
         var creeps = Game.creeps;
         this.cleanCreepMemory();
 
-        for(const i in creeps){
-            
-            var creep = creeps[i];
+        for (const creep_index in creeps) {
+            var creep = creeps[creep_index];
             var role = creep.memory.role;
-            var functionality = require(role);
+            var CreepClass = require(role);
+
+            var roleCreep = new CreepClass(creep);
+
+            this.updateWorkingStatus(creep);
+
             creep.memory.room = creep.room.name;
 
-            functionality.run(this.isWorking(creep), creep);
+            roleCreep.run(creep);
         }
     },
 }
