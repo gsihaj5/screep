@@ -18,5 +18,8 @@
   "homepage": "https://github.com/gsihaj5/screep#readme",
   "devDependencies": {
     "eslint": "^8.13.0"
+  },
+  "dependencies": {
+    "@types/screeps": "^3.2.4"
   }
 }
